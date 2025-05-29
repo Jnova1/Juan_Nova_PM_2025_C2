@@ -17,7 +17,7 @@ void main(void)
 		break;
 	case 2:
 		RES = pow(T,T);
-		/* La funciC3n pow estC! definida en la biblioteca math.h */
+
 		break;
 	case 3:
 	case 4:
