@@ -17,7 +17,7 @@ void main(void)
         RES = T / 5;
     }
     else if (OP == 2) {
-        RES = pow(T, T);  // La función pow está definida en math.h
+        RES = pow(T, T);  
     }
     else if (OP == 3 || OP == 4) {
         RES = 6 * T / 2;
