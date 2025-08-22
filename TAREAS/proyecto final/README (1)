@@ -1,0 +1,74 @@
+#  Calculadora de Costos de Viaje (C en consola)
+
+Este es un pequeño programa en C que uso para **registrar vehículos** y **calcular el costo estimado de un viaje** considerando combustible, gomas (neumáticos), seguro, mantenimiento y depreciación del vehículo. La interfaz es por consola y ofrece un menú simple.
+
+---
+
+## Estructura y modelo de datos
+
+- Defino un `struct Vehiculo` con los campos esenciales:
+  - Identificación: `placa`, `marca`, `modelo`, `tipoCombustible`.
+  - Eficiencia: `kmGalonCarretera`, `kmGalonCiudad`.
+  - Costos variables: `costoGomas`, `kmVidaGomas`, `costoSeguro` (anual), `costoMantenimiento`, `kmEntreMantenimientos`.
+  - Costos fijos/depreciación: `costoVehiculo`, `vidaUtilKm`, `depreciacionAnual` (%), `kmAnuales`.
+- Mantengo un arreglo global `vehiculos[50]` y un contador `totalVehiculos` para los registros.
+
+> Nota: por simplicidad guardo los datos en memoria; al salir del programa se pierden. En “Mejoras futuras” comento cómo persistirlos.
+
+---
+
+##  Flujo general (menú)
+
+1. **Crear vehículo** → pido todos los datos y los almaceno en el arreglo.
+2. **Listar vehículos** → muestro un índice con placa, marca y modelo.
+3. **Gestión datos generales** → reservado (no implementado).
+4. **Calcular costo viaje** → selecciono vehículo y calculo costos para un trayecto.
+
+El menú corre en un `do { ... } while (opcion != 0)` hasta que elijo **Salir**.
+
+---
+
+##  Fórmulas de costo (viaje)
+
+Dado un viaje de `kmViaje` y un `% ciudad`:
+- `kmCiudad = kmViaje * (porcentajeCiudad / 100)`
+- `kmCarretera = kmViaje - kmCiudad`
+
+### 1) Combustible
+- Consumo estimado:
+  - Carretera: `kmCarretera / v.kmGalonCarretera`
+  - Ciudad: `kmCiudad / v.kmGalonCiudad`
+- Precio por combustible (valor de ejemplo embebido en el código):
+  - Gasolina → `300`
+  - Gasoil → `250`
+- **Costo combustible** = `(consumo_carretera + consumo_ciudad) * precioPorGalón`
+
+> El código compara `tipoCombustible` con `"GASOLINA"` y usa 300; si no, asume 250. (Ver “Mejoras futuras” para normalizar/parametrizar).
+
+### 2) Gomas (neumáticos)
+- **Costo gomas** = `(kmViaje / v.kmVidaGomas) * v.costoGomas`
+
+### 3) Seguro (prorrateado por km anuales declarados)
+- **Costo seguro** = `(v.costoSeguro / v.kmAnuales) * kmViaje`
+
+### 4) Mantenimiento (cada X km)
+- **Costo mantenimiento** = `(kmViaje / v.kmEntreMantenimientos) * v.costoMantenimiento`
+
+### 5) Depreciación del vehículo (aprox por km)
+- **Costo vehículo** = `(v.depreciacionAnual / 100) * v.costoVehiculo * (kmViaje / v.kmAnuales)`
+
+### Totales
+- **Costo total** = suma de todos los componentes
+- **Costo por km** = `costoTotal / kmViaje`
+
+El programa imprime el desglose con íconos y colores ANSI.
+
+---
+
+##  Compilación y ejecución
+
+Asumiendo `gcc` instalado:
+
+```CMD
+gcc main.c -o programa
+programa.exe
